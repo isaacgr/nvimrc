@@ -61,3 +61,23 @@ vim.keymap.set("n", "<leader>rm", ":%s/\r//g")
 
 -- Pretty print JSON file in current buffer using python
 vim.keymap.set("n", "<leader>J", ":%!python3 -m json.tool<CR>")
+
+-- Disable arrow keys in normal, insert, and visual modes
+local opts = { noremap = true, silent = true }
+vim.keymap.set({ "n", "i", "v" }, "<Up>", "<NOP>", opts)
+vim.keymap.set({ "n", "i", "v" }, "<Down>", "<NOP>", opts)
+vim.keymap.set({ "n", "i", "v" }, "<Left>", "<NOP>", opts)
+vim.keymap.set({ "n", "i", "v" }, "<Right>", "<NOP>", opts)
+
+--[[
+--
+Map Ctrl+j to move the cursor to the window below
+Map Ctrl+k to move the cursor to the window above
+Map Ctrl+h to move the cursor to the window left
+Map Ctrl+l to move the cursor to the window right
+
+vim.keymap.set("n", "<C-j>", "<C-W>j")
+vim.keymap.set("n", "<C-k>", "<C-W>k")
+vim.keymap.set("n", "<C-h>", "<C-W>h")
+vim.keymap.set("n", "<C-l>", "<C-W>l")
+--]]
