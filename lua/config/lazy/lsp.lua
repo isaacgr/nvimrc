@@ -34,7 +34,9 @@ return {
     config = function()
         -- 2. Setup formatting via conform
         require("conform").setup({
-            formatters_by_ft = {}, -- add filetype->formatter mappings here
+            formatters_by_ft = {
+                python = { 'autopep8' }
+            },
         })
 
         -- 3. Configure nvim-cmp and merge capabilities with LSP defaults
@@ -46,6 +48,9 @@ return {
             vim.lsp.protocol.make_client_capabilities(),
             cmp_lsp.default_capabilities()
         )
+        if not table.unpack then
+            table.unpack = unpack
+        end
 
         -- 4. Show LSP progress with fidget
         require('fidget').setup({})
@@ -54,52 +59,38 @@ return {
         local lspconfig = require('lspconfig')
         local util      = lspconfig.util
 
+        -- Custom settings for Lua language server:
+        lspconfig.lua_ls.setup {
+            root_dir     = util.root_pattern(table.unpack(root_files)),
+            capabilities = capabilities,
+            settings     = {
+                Lua = {
+                    format = {
+                        enable = true,
+                        defaultConfig = {
+                            indent_style = 'space',
+                            indent_size  = '2',
+                        },
+                    },
+                },
+            },
+        }
+        lspconfig.pyright.setup {
+            capabilities = capabilities,
+            settings = {
+                python = {
+                    analysis = {
+                        autoImportCompletions = true,
+                        typeCheckingMode = "strict",
+                        useLibraryCodeForTypes = true,
+                    },
+                    pythonPath = './localvenv/bin/python'
+                }
+            }
+        }
         require('mason').setup()
         require('mason-lspconfig').setup({
             ensure_installed = { 'lua_ls', 'gopls', 'ts_ls', 'pyright' },
-            handlers = {
-                -- Default handler for all servers:
-                function(server_name)
-                    lspconfig[server_name].setup {
-                        root_dir     = util.root_pattern(unpack(root_files)),
-                        capabilities = capabilities,
-                    }
-                end,
-
-                -- Custom settings for Lua language server:
-                ['lua_ls'] = function()
-                    lspconfig.lua_ls.setup {
-                        root_dir     = util.root_pattern(unpack(root_files)),
-                        capabilities = capabilities,
-                        settings     = {
-                            Lua = {
-                                format = {
-                                    enable = true,
-                                    defaultConfig = {
-                                        indent_style = 'space',
-                                        indent_size  = '2',
-                                    },
-                                },
-                            },
-                        },
-                    }
-                end,
-                ['pyright'] = function()
-                    lspconfig.pyright.setup {
-                        capabilities = capabilities,
-                        settings = {
-                            python = {
-                                analysis = {
-                                    autoImportCompletions = true,
-                                    diagnosticMode = "workspace",
-                                    typeCheckingMode = "strict", 
-                                    useLibraryCodeForTypes = true,
-                                }
-                            }
-                        }
-                    }
-                end
-            },
         })
 
         -- 6. Completion configuration
