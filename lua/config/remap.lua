@@ -38,7 +38,14 @@ vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
 
 -- Format buffer using LSP
 vim.keymap.set("n", "<leader>f", function()
-    require("conform").format({async = true})
+    local conform = require('conform')
+    local bufnr = vim.api.nvim_get_current_buf()
+    local available = conform.list_formatters(bufnr)
+    if #available > 0 then
+        conform.format({async = true})
+    else
+        vim.lsp.buf.format({async=true})
+    end
 end
 )
 
