@@ -15,7 +15,7 @@ return {
       desc = "Next Diagnostic (Trouble)",
     },
     {
-      "<leader>[t",
+      "<leader>[T",
       "<cmd>Trouble diagnostics prev skip_groups=true jump=true<cr>",
       desc = "Previous Diagnostic (Trouble)",
     },
