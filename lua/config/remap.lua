@@ -64,7 +64,9 @@ vim.keymap.set("n", "<leader>s", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left>
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", {silent = true})
 
 -- Remove windows style carriage returns (^M)
-vim.keymap.set("n", "<leader>rm", ":%s/\r//g")
+vim.keymap.set("n", "<leader>rm", ":%s/\\r//g<CR>", {
+    desc = "Remove ^M carriage returns",
+})
 
 -- Pretty print JSON file in current buffer using python
 vim.keymap.set("n", "<leader>J", ":%!python3 -m json.tool<CR>")
